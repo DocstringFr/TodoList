@@ -1,0 +1,10 @@
+<form method="POST" class="d-flex justify-content-between align-items-center">
+    {% csrf_token %}
+    <p class="text-dark mb-0">{{ task.name }}</p>
+    <button class="btn btn-danger"
+            hx-target="closest form"
+            hx-swap="outerHTML"
+            hx-confirm="Souhaitez-vous vraiment supprimer cette tâche ?"
+            hx-post="{% url 'delete-task' task.pk %}">-
+    </button>
+</form>

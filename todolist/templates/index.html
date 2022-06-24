@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo App</title>
+    <script src="https://unpkg.com/htmx.org@1.7.0" integrity="sha384-EzBXYPt0/T6gxNp0nuPtLkmRpmDBbjg6WmCUZRLXBBwYYmwAUxzlSGej0ARHX0Bo" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+          crossorigin="anonymous">
+</head>
+<body>
+
+<main class="container mx-auto mt-5">
+    <header class="row mb-3">
+        <div class="col offset-lg-1 d-flex align-items-center gap-2">
+            <img src="https://cdn-icons-png.flaticon.com/64/3566/3566511.png" alt="TodoList">
+            <h1 class="mb-0">DocList</h1>
+        </div>
+    </header>
+
+    <section class="row">
+        <!-- COLLECTIONS -->
+        <nav class="col-5 offset-lg-1 col-lg-2">
+            <div class="list-group mb-2" id="collections">
+                {% for collection in collections %}
+                    {% include 'collection_item.html' with collection=collection %}
+                {% endfor %}
+            </div>
+
+            <form method="POST" class="d-flex gap-2">
+                {% csrf_token %}
+                <input type="text" name="collection-name" class="form-control" placeholder="Collection...">
+                <button class="btn btn-success block"
+                        type="submit"
+                        hx-target="#collections"
+                        hx-swap="beforeend"
+                        hx-post="{% url 'add-collection' %}">+
+                </button>
+            </form>
+
+        </nav>
+
+        <!-- TASKS -->
+        <section class="col-7 col-lg-7">
+            <form method="POST" class="justify-content-center">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Description de la tâche..." name="task-name">
+                    <button class="btn btn-success"
+                            id="add-task-submit"
+                            hx-target="#tasks"
+                            hx-swap="beforeend"
+                            hx-vars="js:{'collection': getCollectionFromURL()}"
+                            hx-post="{% url 'add-task' %}"
+                            type="submit">Ajouter
+                    </button>
+                </div>
+            </form>
+
+            <div class="row" id="tasks-container">
+                {% include 'collection_tasks.html' with tasks=tasks collection=collection %}
+            </div>
+        </section>
+    </section>
+
+    <footer class="row mt-5">
+        <div class="col offset-1 text-center">© Docstring - 2022</div>
+    </footer>
+
+</main>
+
+
+<script>
+
+    function getCollectionFromURL() {
+        let params = new URLSearchParams(window.location.search);
+        return params.get("collection");
+    }
+
+    document.body.addEventListener("htmx:responseError", function(evt) {
+        alert(evt.detail.xhr.responseText);
+    })
+
+
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>

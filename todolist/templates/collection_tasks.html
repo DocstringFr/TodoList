@@ -1,0 +1,8 @@
+<div class="mt-2 d-flex flex-column gap-2" id="tasks">
+    {% for task in tasks %}
+        {% include 'task_item.html' with task=task %}
+    {% endfor %}
+</div>
+{% if not collection.slug == "_defaut" %}
+    <a href="{% url 'delete-collection' collection.pk %}" class="mt-2">Supprimer cette collection</a>
+{% endif %}

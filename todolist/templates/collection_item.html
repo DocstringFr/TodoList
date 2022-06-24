@@ -1,0 +1,13 @@
+<button class="list-group-item text-start {% if request.GET.collection == collection.slug %}active{% endif %} "
+        id="v-pills-home-tab"
+        type="button"
+        role="tab"
+        data-bs-toggle="pill"
+        data-bs-target="#v-pills-{{ collection.slug }}"
+        aria-controls="v-pills-{{ collection.slug }}"
+        aria-selected="true"
+        hx-get="{% url 'get-tasks' collection.slug %}"
+        hx-target="#tasks-container"
+        hx-push-url="?collection={{ collection.slug }}">
+    {{ collection.name }}
+</button>
